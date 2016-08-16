@@ -50,8 +50,45 @@
 ; Your goal is to write the score method.
 
 (defun score (dice)
-  ; You need to write this method
-)
+  ;; You need to write this method
+  (let* ((score 0)
+         (processed-dice
+          (loop for roll in dice
+                collecting (= 1 roll) into ones
+                collecting (= 2 roll) into twos
+                collecting (= 3 roll) into threes
+                collecting (= 4 roll) into fours
+                collecting (= 5 roll) into fives
+                collecting (= 6 roll) into sixes
+                finally (return
+                         (mapcar
+                          (lambda (l) (remove nil l))
+                          (list ones twos threes fours fives sixes))))))
+
+    (destructuring-bind (ones twos threes fours fives sixes) processed-dice
+      (when (> (length ones) 2)
+        (setf score (+ score 1000)))
+
+      (when (> (length twos) 2)
+        (setf score (+ score 200)))
+
+      (when (> (length threes) 2)
+        (setf score (+ score 300)))
+
+      (when (> (length fours) 2)
+        (setf score (+ score 400)))
+
+      (when (> (length fives) 2)
+        (setf score (+ score 500)))
+
+      (when (> (length sixes) 2)
+        (setf score (+ score 600)))
+
+      (setf score (+ score (* 100 (mod (length ones) 3))))
+      (setf score (+ score (* 50 (mod (length fives) 3))))
+
+      score))
+  )
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))

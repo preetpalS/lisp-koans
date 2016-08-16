@@ -22,16 +22,20 @@
 
 ;;  YOU WRITE THIS PART:
 (defclass dice-set ()
-  () ;; WRITE DICE-SET CLASS BODY HERE
-)
+  ;; WRITE DICE-SET CLASS BODY HERE
+  ((last-roll-of-dices :reader get-values :writer roll :initform nil)))
 
 (defmethod get-values ((object dice-set))
   ;; WRITE GET-VALUES METHOD DEFINITION HERE
-)
+  (slot-value object 'last-roll-of-dices))
 
 (defmethod roll (how-many (object dice-set))
   ;; WRITE ROLL METHOD DEFINITION HERE
-)
+  (setf (slot-value object 'last-roll-of-dices) nil)
+  (dotimes (i how-many)
+    (setf (slot-value object 'last-roll-of-dices)
+          (cons (+ 1 (random 6)) (slot-value object 'last-roll-of-dices))))
+  (slot-value object 'last-roll-of-dices))
 
 
 (define-test test-create-dice-set

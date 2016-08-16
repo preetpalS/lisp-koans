@@ -17,8 +17,18 @@
 
 (define-condition triangle-error  (error) ())
 
+;; Triangle inequality (used to detect illegal triangles): Sum of the lengths
+;; of any two sides must be greater than or equal to the length of the remaining
+;; side (also disregarding equality case (which would result in triangle with 0
+;; area)).
 (defun triangle (a b c)
-  :write-me)
+  (when (or (not (> (+ a b) c))
+            (not (> (+ a c) b))
+            (not (> (+ b c) a))) (error 'triangle-error))
+
+  (cond ((= a b c) :equilateral)
+        ((or (= a b) (= a c) (= b c)) :isosceles)
+        (t :scalene)))
 
 
 (define-test test-equilateral-triangles-have-equal-sides
